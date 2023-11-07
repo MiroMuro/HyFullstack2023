@@ -1,0 +1,60 @@
+sequenceDiagram
+    participant browser
+    participant server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: the css file
+    deactivate server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: the JavaScript file
+    deactivate server
+    
+    Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+    deactivate server    
+
+    Note right of browser: The browser executes the callback function that renders the notes
+
+    browser->> server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    activate server
+    Note right of browser:    The browser does a POST request to the server accompanied with the input data
+    Note left of server: The server invokes the method for handling a POST-request i.e. add the input data to the notes
+    server--> browser: HTTP 302
+    deactivate server
+
+    Note right of browser: This code from the server urges the browser  to do a new GET to the location mentioned in the headers
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: the css file
+    deactivate server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: the JavaScript file
+    deactivate server
+        
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "new input data", "date": "2024-11-08" }, ... ]
+    deactivate server
+    
+    Note right of browser: The browser executes the callback function that renders the notes that now includes that data that was input earlier
+
+
+ 
