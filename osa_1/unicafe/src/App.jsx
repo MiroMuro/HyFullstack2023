@@ -11,24 +11,50 @@ const StatisticLine =({good, bad, neutral, text}) =>{
     )
   }
   else if(text === "good" && määrä !== 0){
-    return ( <p> Good: {good}</p>)
+    return ( 
+    <tr>
+      <td> Good: </td>
+      <td>{good}</td>  
+    </tr>)
   }
   else if(text === "bad" && määrä !== 0){
-    return( <p> Bad: {bad}</p>)
+    return( 
+      <tr>
+      <td> Bad: </td>
+      <td>{bad}</td>  
+    </tr>)
+    
   }
   else if(text === "neutral" && määrä !== 0){
-    return (<p> Neutral: {neutral}</p>)
+    return (
+      <tr>
+      <td> Neutral: </td>
+      <td>{neutral}</td>  
+    </tr>)
+    
   }
   else if(text === "average" && määrä !== 0){
-    return(<p>Average {(good+ neutral*0 + (-bad))/määrä}</p>)
+    return(
+      <tr>
+      <td>Average</td>
+      <td>{(good+ neutral*0 + (-bad))/määrä}</td>
+      </tr>
+    )
   }
   else if(text === "positive" && määrä !== 0){
     return(
-    <p>Positive {(good / määrä)*100}%</p>
+      <tr>
+    <td>Positive: </td>
+    <td>{(good / määrä)*100}%</td>
+    </tr>
     )
   } 
   else if(text === undefined) {
-    return( <p>All {määrä}</p>)
+    return( 
+    <tr>
+    <td>All: </td>
+    <td>{määrä}</td>
+    </tr>)
   }
   
     
@@ -49,12 +75,15 @@ const [total, setTotal] = useState(0)
       <Button handleClick={() => setNeutral(good +1)} text="neutral" />      
       <Button handleClick={() => setBad(bad + 1)} text="bad"/>
       <h1>Statistics</h1>
-      <StatisticLine good={good} bad={bad} neutral={neutral} />
+      <table>
       <StatisticLine text="good" good={good} bad={bad} neutral={neutral} />
       <StatisticLine text="neutral" good={good} bad={bad} neutral={neutral} />
       <StatisticLine text="bad" good={good} bad={bad} neutral={neutral} />
       <StatisticLine text="average" good={good} bad={bad} neutral={neutral} />
       <StatisticLine text="positive" good={good} bad={bad} neutral={neutral} />
+      <StatisticLine  good={good} bad={bad} neutral={neutral} />
+      </table>
+      
 
     </>
   )
