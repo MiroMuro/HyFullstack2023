@@ -1,6 +1,33 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import phoneBookService from "./services/contacts"
+
+const Notification = ({message}) =>{
+  if(message === null){
+    return null
+  }else if(message.includes(" was already removed from the server!")){
+    const errorStyle = {
+      color:'red',
+      backgroundColor: 'rgb(196, 192, 192)',
+      fontSize: 20,
+      borderStyle: "solid",
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10
+  }
+    return(
+      <div style={errorStyle}>
+      {message}
+    </div>
+    )
+  }
+  return(
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
 const Filter = ({searchWord, onChange}) =>{
   return(
     <div>Search for a contact
@@ -48,6 +75,7 @@ const App = () => {
     name : "", number : ""
   })
   const [searchWord, setSearchWord] = useState("")
+  const [message,setMessage] = useState(null)
 
   const hook = () =>{
     phoneBookService
@@ -68,7 +96,11 @@ const App = () => {
              phoneBookService
              .updateContact(contactToUpdate.id, contact)
              .then(updatedContact =>{
+              handleMessageChange(updatedContact," phone number updated")
               setPhonebook(phoneBook.map(contact => contact.id !== updatedContact.id ? contact : updatedContact))
+             })
+             .catch(error=>{
+              handleMessageChange(contactToUpdate," was already removed from the server!")
              })
           }else{
            null 
@@ -82,6 +114,7 @@ const App = () => {
         .createContact(newContactObject)
         .then(initialContacts => {
           console.log("Lisäys", initialContacts)
+          handleMessageChange(initialContacts," was added to the phonebook")
           setPhonebook(phoneBook.concat(initialContacts))
         })
       }
@@ -94,12 +127,23 @@ const App = () => {
       phoneBookService
     .deleteContact(id)
     .then(response =>{
-      console.log(response.data)
+      console.log(personToBeDeleted)
+      handleMessageChange(personToBeDeleted,
+         "was deleted from the phonebook")
     })
     setPhonebook(phoneBook.filter(contact => contact.id !== id))
   }
     }
     
+
+  const handleMessageChange = (x,y,z) =>{
+    
+    setMessage(`${x.name} ${y}`)
+      setTimeout(()=>{
+        setMessage(null)
+      },3000)
+  }
+  
 
   const handleInputChange = (event) =>{
     const newContact = {
@@ -124,6 +168,7 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
+      <Notification message={message}/>
       <Filter searchWord={searchWord}
         onChange={handleSearchWordChange}/>
       <h1>Add a new Contact</h1>
@@ -138,7 +183,6 @@ const App = () => {
       <ul>
         <Contacts phoneBook={phoneBook} searchWord={searchWord} onClick={dc}/>
       </ul>
-      <button onClick={()=>dc(9)}>Delete number 9 </button>
       </div>
     </>
   )

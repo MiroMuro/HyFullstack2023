@@ -3,10 +3,37 @@ import axios from 'axios'
 import Note from './components/Note'
 import noteService from "./services/notes"
 
+const Footer = () =>{
+  const footerStyle = {
+    color: 'black',
+    fontStyle: 'italic',
+    fontSize: 24
+  }
+
+  return(
+    <div style={footerStyle}>
+      <br/>
+      <em>Note app, Department of Computer Science, University of Helsinki</em>
+    </div>
+  )
+}
+
+const Notification = ({message}) => {
+  if(message === null){
+    return null
+  }
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
 const App = (props) => {  
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState("dust to dust")
   const [showAll, setShowAll] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(()=>{
     noteService
@@ -49,15 +76,19 @@ const App = (props) => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
       .catch(error =>{
-        alert(
-          `the note ${note.content} was already deleted from the server!`
+        setErrorMessage(
+          `Note '${note.content}' was already removed from the server!`
         )
+        setTimeout(()=>{
+          setErrorMessage(null)
+        },5000)
         setNotes(notes.filter(n => n.id !== id))
       })
   }
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage}/>
       <ul>
         {notesToShow.map(note => 
           <Note 
@@ -76,6 +107,7 @@ const App = (props) => {
         <button onClick={() => setShowAll(!showAll)}>
           show { showAll ? 'important' : 'all'}</button>
       </div>
+      <Footer/>
     </div>
   )
 }
