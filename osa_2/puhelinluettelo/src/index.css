@@ -1,9 +1,97 @@
-.notification{
-    color:green;
-    background-color: rgb(196, 192, 192);
-    font-size: 20px;
-    border-style: solid;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+.notification {
+  color: green;
+  background-color: white;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.title {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  padding: 20px 0;
+  text-shadow: 3px 3px 1px rgb(241, 229, 62);
+  text-align: center;
+}
+.search {
+  position: relative;
+  float: right;
+  bottom: 38px;
+}
+.searchText {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-weight: bold;
+  margin-bottom: 13px;
+}
+.searchInput {
+  width: 200px;
+  border-radius: 10px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.form {
+  width: 300px;
+}
+.contactInput {
+  display: block;
+  position: relative;
+  margin: 5px 0 5px 0;
+  border-radius: 10px;
+}
+
+.inputTitle {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-weight: bold;
+}
+.addButton {
+  margin: 10px auto;
+  text-align: center;
+  padding: 5px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 2px solid rgb(8, 114, 8);
+}
+.addButton:hover {
+  background-color: rgb(8, 114, 8);
+}
+.contactUl {
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: white;
+}
+.contactDiv {
+  padding: 10px 10px 10px 10px;
+}
+.contactInstance {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+
+  padding: 5px 5px;
+}
+.deleteButton {
+  float: right;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid rgb(190, 28, 28);
+  border-radius: 5px;
+}
+.deleteButton:hover {
+  background-color: rgb(190, 28, 28);
+}
+body {
+  width: 600px;
+  margin: 0 auto;
+  background-color: rgb(223, 134, 33);
+  padding: 0 20px 20px 20px;
+  border: 5px solid black;
+}
+html {
+  background-color: rgba(255, 255, 255, 0.692);
+}
+h1 {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
 }
