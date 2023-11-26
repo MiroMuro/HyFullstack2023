@@ -1,0 +1,7 @@
+@id = 655c717b4a95fd9cb953ddbb
+
+PUT http://localhost:3001/api/notes/{{id}}
+Content-Type: application/json
+
+{"content":"lol moly",
+"important": true}
