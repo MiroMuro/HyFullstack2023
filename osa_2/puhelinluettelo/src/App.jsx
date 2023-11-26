@@ -4,11 +4,6 @@ import phoneBookService from "./services/contacts";
 const Notification = ({ message }) => {
   if (message === null) {
     return null;
-  } else if (message.includes(" was already removed from the server!")) {
-    const errorStyle = {
-      color: "red",
-    };
-    return <div style={errorStyle}>{message}</div>;
   }
   return <div className="notification">{message}</div>;
 };
@@ -101,7 +96,6 @@ const App = () => {
 
   const addContact = (event) => {
     event.preventDefault();
-
     if (phoneBook.some((x) => x.name === contact.name)) {
       if (confirm("Do you want to alter this persons phone number") === true) {
         let contactToUpdate = phoneBook.filter(
@@ -111,7 +105,7 @@ const App = () => {
         phoneBookService
           .updateContact(contactToUpdate.id, contact)
           .then((updatedContact) => {
-            handleMessageChange(updatedContact, " phone number updated");
+            handleMessageChange(`${updatedContact.name} phone number updated`);
             setPhonebook(
               phoneBook.map((contact) =>
                 contact.id !== updatedContact.id ? contact : updatedContact
@@ -119,10 +113,8 @@ const App = () => {
             );
           })
           .catch((error) => {
-            handleMessageChange(
-              contactToUpdate,
-              " was already removed from the server!"
-            );
+            handleMessageChange(`${error.response.data.error}`);
+            console.log(error.response.data);
           });
       } else {
         null;
@@ -136,34 +128,38 @@ const App = () => {
         .createContact(newContactObject)
         .then((initialContacts) => {
           console.log("Lisäys", initialContacts);
-          handleMessageChange(initialContacts, " was added to the phonebook");
+          handleMessageChange(
+            `${initialContacts.name} was added to the phonebook`
+          );
           setPhonebook(phoneBook.concat(initialContacts));
+        })
+        .catch((error) => {
+          handleMessageChange(`${error.response.data.error}`);
+          console.log(error.response.data);
         });
+      setContact({ name: "", number: "" });
     }
   };
 
   const dc = (id) => {
     const personToBeDeleted = phoneBook.find((contact) => contact.id === id);
-    console.log("kssk");
     if (
       window.confirm(`Do you really want to delete ${personToBeDeleted.name}?`)
     ) {
       phoneBookService.deleteContact(id).then((response) => {
-        console.log(personToBeDeleted);
         handleMessageChange(
-          personToBeDeleted,
-          "was deleted from the phonebook"
+          `${personToBeDeleted.name} was deleted from the phonebook`
         );
       });
       setPhonebook(phoneBook.filter((contact) => contact.id !== id));
     }
   };
 
-  const handleMessageChange = (x, y, z) => {
-    setMessage(`${x.name} ${y}`);
+  const handleMessageChange = (message) => {
+    setMessage(message);
     setTimeout(() => {
       setMessage(null);
-    }, 3000);
+    }, 5000);
   };
 
   const handleInputChange = (event) => {
