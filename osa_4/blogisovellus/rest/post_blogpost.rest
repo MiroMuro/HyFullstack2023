@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
- "title": "cats",
+ "title": "Sasas",
  "author":"David Swimmer",
- "url":"http://blogspot.com/cats",
- "likes": "34534"
+ "url":"s",
+ "likes": 500000
 }
