@@ -8,12 +8,7 @@ const helper = require("./test_helper");
 
 beforeEach(async () => {
   await Note.deleteMany({});
-
-  const noteObjects = helper.initialNotes.map((note) => new Note(note));
-  const promiseArray = noteObjects.map((note) => note.save());
-  await Promise.all(promiseArray);
-
-  console.log("done");
+  await Note.insertMany(helper.initialNotes);
 });
 beforeAll(async () => {
   await mongoose.connect(config.MONGODB_URI);

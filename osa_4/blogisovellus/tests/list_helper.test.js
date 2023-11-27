@@ -26,8 +26,6 @@ const mostLikedBlogpost = {
   likes: "41232",
 };
 
-describe("Most", () => {
-  test("likes on a blogpost", () => {
-    expect(list_helper.favouriteBlog(testBlogs)).toEqual(mostLikedBlogpost);
-  });
+test("Most liked blogpost found", () => {
+  expect(list_helper.favouriteBlog(testBlogs)).toEqual(mostLikedBlogpost);
 });
