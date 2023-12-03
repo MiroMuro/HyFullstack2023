@@ -1,9 +1,13 @@
 const clog = (...x) => {
-  console.log(...x);
+  if (process.env.NODE_ENV !== "test") {
+    console.log(...x);
+  }
 };
 
 const error = (...x) => {
-  console.error(...x);
+  if (process.env.NODE_ENV !== "test") {
+    console.error(...x);
+  }
 };
 
 module.exports = { clog, error };

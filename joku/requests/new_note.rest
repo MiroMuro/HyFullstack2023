@@ -1,7 +1,9 @@
 POST  http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJhcnJlbGdvYmxpbjEyMzEyMyIsImlkIjoiNjU2NzA1NjM5NDNkMDIyZTM4OTU3MThjIiwiaWF0IjoxNzAxMjYxMjU4fQ._g1s_cZKB3ZPaOD4t1K_Hw234EMDoCjj_pP8aHvdhOw
 
 {
-    "content": "",
-    "important": false
+    "content": "break the windows",
+    "important": true,
+    "userId": "6566fdb161c6ccae197ee045"
 }

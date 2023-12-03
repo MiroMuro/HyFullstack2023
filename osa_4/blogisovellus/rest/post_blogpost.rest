@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFwZWxsYTQiLCJpZCI6IjY1NjlhY2ZlN2M4ZTg3NzIwZDViOTI0YyIsImlhdCI6MTcwMTQzMDU0NX0.YBtzsg2GD72QKw1BjpL_xIcyPM-vI_Bu6I-nvRRWXWk
 
 {
- "title": "Sasas",
- "author":"David Swimmer",
- "url":"s",
- "likes": 500000
+ "title": "Pakastimen huolto",
+ "author":"Minna Mäntynen",
+ "url":"www.pakastinhuoltomäntynen.fi",
+ "likes": 98834
 }

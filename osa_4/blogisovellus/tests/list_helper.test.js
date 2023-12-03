@@ -29,3 +29,13 @@ const mostLikedBlogpost = {
 test("Most liked blogpost found", () => {
   expect(list_helper.favouriteBlog(testBlogs)).toEqual(mostLikedBlogpost);
 });
+
+test("Author with most blogs found", () => {
+  expect(list_helper.mostBlogs(testBlogs)["author"]).toEqual("David Swimmer");
+});
+
+test("Author with most likes", () => {
+  expect(list_helper.authorWithMostLikes(testBlogs)["author"]).toEqual(
+    "David Runner"
+  );
+});

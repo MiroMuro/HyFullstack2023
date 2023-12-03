@@ -1,5 +1,7 @@
-const Blog = require("../models/blog");
+const bcrypt = require("bcrypt");
 
+const Blog = require("../models/blog");
+const User = require("../models/user");
 const initialBlogs = [
   {
     title: "Kokkaus blogi",
@@ -26,11 +28,37 @@ const initialBlogs = [
     likes: 2343,
   },
 ];
+const initialUsers = [
+  {
+    username: "Stogggu",
+    name: "Matias Paavola",
+    password: "password",
+  },
+  {
+    username: "salsagray6762grimreaper",
+    name: "Salli Saukkola",
+    password: "password",
+  },
+  {
+    username: "xx_sniper360noscope_xx",
+    name: "Juha-Pekka Toimarinen",
+    password: "salasana",
+  },
+];
 
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((user) => user.toJSON());
+};
 const blogsInDB = async () => {
   const blogs = await Blog.find({});
-  console.log(blogs.map((blog) => blog.toJSON()));
-  return blogs;
+  return blogs.map((blog) => blog.toJSON());
 };
 
-module.exports = { initialBlogs, blogsInDB };
+module.exports = {
+  initialBlogs,
+  initialUsers,
+  blogsInDB,
+  usersInDb,
+  returnUser,
+};
