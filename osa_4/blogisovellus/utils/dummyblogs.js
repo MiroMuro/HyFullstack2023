@@ -1,4 +1,4 @@
-blogs = [
+let blogs = [
   {
     title: "How to dress",
     author: "David Swimmer",
