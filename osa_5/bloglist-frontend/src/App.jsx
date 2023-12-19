@@ -3,6 +3,8 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import LoginForm from "./components/loginForm";
 import loginService from "./services/login";
+import Toggable from "./components/Togglable";
+import NoteForm from "./components/NoteForm";
 import "./index.css";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -16,6 +18,7 @@ const App = () => {
   });
   const [x, setX] = useState([]);
   const [message, setMessage] = useState(null);
+  const [loginVisible, setLoginVisible] = useState(false);
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, [x]);
@@ -69,20 +72,22 @@ const App = () => {
   };
 
   const Notification = ({ message, status }) => {
-    console.log(status);
     if (message === null) {
       return null;
     }
     return <div className={status}>{message}</div>;
   };
 
-  return (
-    <div>
-      {!user && (
-        <div>
-          <div>
-            <Notification message={message} status={"error"} />
-          </div>
+  /*const LoginF = () => {
+    const hideWhenVisible = { display: loginVisible ? "none" : "" };
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
           <LoginForm
             username={username}
             password={password}
@@ -90,6 +95,27 @@ const App = () => {
             setPassword={setPassword}
             handleLogin={handleLogin}
           />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    );
+  }; */
+  return (
+    <div>
+      {!user && (
+        <div>
+          <div>
+            <Notification message={message} status={"error"} />
+            <Toggable buttonLabel="login">
+              <LoginForm
+                username={username}
+                password={password}
+                setUsername={setUsername}
+                setPassword={setPassword}
+                handleLogin={handleLogin}
+              />
+            </Toggable>
+          </div>
         </div>
       )}
 
@@ -100,35 +126,14 @@ const App = () => {
           </div>
           <h1>blogs</h1>
           <h2>{user.name} logged in</h2>
-          <div>
-            <form onSubmit={addBlog}>
-              <div>
-                Author:
-                <input
-                  name="author"
-                  value={blog.author}
-                  onChange={handleInputChange}
-                ></input>
-              </div>
-              <div>
-                Title:
-                <input
-                  name="title"
-                  value={blog.title}
-                  onChange={handleInputChange}
-                ></input>
-              </div>
-              <div>
-                Url:
-                <input
-                  name="url"
-                  value={blog.url}
-                  onChange={handleInputChange}
-                ></input>
-              </div>
-              <button type="submit">Create</button>
-            </form>
-          </div>
+          <Toggable buttonLabel="new blog">
+            <NoteForm
+              value={blog}
+              onSubmit={addBlog}
+              handleChange={handleInputChange}
+            />
+          </Toggable>
+
           <br />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
