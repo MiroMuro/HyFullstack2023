@@ -1,24 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import LoginForm from "./components/loginForm";
 import loginService from "./services/login";
 import Toggable from "./components/Togglable";
-import NoteForm from "./components/NoteForm";
+import BlogForm from "./components/BlogForm";
 import "./index.css";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [blog, setBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
   const [x, setX] = useState([]);
   const [message, setMessage] = useState(null);
   const [loginVisible, setLoginVisible] = useState(false);
+  const blogFormRef = useRef();
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, [x]);
@@ -32,23 +28,17 @@ const App = () => {
     }
   }, []);
 
-  const addBlog = async (event) => {
-    event.preventDefault();
-    await blogService.postBlog(blog);
-    setX(...x, 1);
-    setBlog({
-      title: "",
-      author: "",
-      url: "",
-    });
+  const addBlog = async (blogObject) => {
+    await blogService.postBlog(blogObject);
+    blogFormRef.current.toggleVisibility();
+    setX([...x, x + 1]);
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setBlog((prevState) => ({ ...prevState, [name]: value }));
-    console.log(blog);
+  const addLikeToBlog = async (blogObject) => {
+    console.log(blogObject);
+    await blogService.updateBlog(blogObject);
+    setX([...x, x + 1]);
   };
-
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -78,28 +68,6 @@ const App = () => {
     return <div className={status}>{message}</div>;
   };
 
-  /*const LoginF = () => {
-    const hideWhenVisible = { display: loginVisible ? "none" : "" };
-    const showWhenVisible = { display: loginVisible ? "" : "none" };
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
-    );
-  }; */
   return (
     <div>
       {!user && (
@@ -126,17 +94,15 @@ const App = () => {
           </div>
           <h1>blogs</h1>
           <h2>{user.name} logged in</h2>
-          <Toggable buttonLabel="new blog">
-            <NoteForm
-              value={blog}
-              onSubmit={addBlog}
-              handleChange={handleInputChange}
-            />
+
+          <Toggable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
           </Toggable>
 
           <br />
+
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} updateBlog={addLikeToBlog} blog={blog} />
           ))}
           <div>
             <button
