@@ -39,6 +39,14 @@ const App = () => {
     await blogService.updateBlog(blogObject);
     setX([...x, x + 1]);
   };
+
+  const deleteBlog = async (blogid, blogauthor, blogtitle) => {
+    console.log("Deleting", blogid, blogauthor, blogtitle);
+    if (window.confirm(`Remove blog ${blogtitle} by: ${blogauthor}?`)) {
+      await blogService.deleteBlog(blogid);
+      setX([...x, x + 1]);
+    }
+  };
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -46,10 +54,10 @@ const App = () => {
         username,
         password,
       });
-
       window.localStorage.setItem("loggedBlogger", JSON.stringify(user));
       setUser(user);
-      blogService.setToken(user.setToken);
+      console.log("Kirjautunut", user);
+      blogService.setToken(user.token);
       setUsername("");
       setPassword("");
     } catch (exception) {
@@ -94,16 +102,6 @@ const App = () => {
           </div>
           <h1>blogs</h1>
           <h2>{user.name} logged in</h2>
-
-          <Toggable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Toggable>
-
-          <br />
-
-          {blogs.map((blog) => (
-            <Blog key={blog.id} updateBlog={addLikeToBlog} blog={blog} />
-          ))}
           <div>
             <button
               onClick={() => {
@@ -114,6 +112,21 @@ const App = () => {
               Logout
             </button>
           </div>
+          <Toggable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Toggable>
+          <br />
+          {blogs
+            .sort((a, b) => (a.likes < b.likes ? 1 : -1))
+            .map((blog) => (
+              <Blog
+                key={blog.id}
+                updateBlog={addLikeToBlog}
+                blog={blog}
+                deleteBlog={deleteBlog}
+                user={user}
+              />
+            ))}
         </div>
       )}
     </div>
