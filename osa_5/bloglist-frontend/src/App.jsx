@@ -100,7 +100,7 @@ const App = () => {
           <div>
             <Notification message={message} status={"success"} />
           </div>
-          <h1>blogs</h1>
+          <h1>Blogs</h1>
           <h2>{user.name} logged in</h2>
           <div>
             <button

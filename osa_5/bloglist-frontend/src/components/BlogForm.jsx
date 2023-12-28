@@ -7,20 +7,24 @@ const BlogForm = ({ createBlog }) => {
     url: "",
   });
 
-  const addingBlog = (event) => {
+  const addingBlog = async (event) => {
     event.preventDefault();
-    createBlog({
+    await createBlog({
       title: newBlog.title,
       author: newBlog.author,
       url: newBlog.url,
     });
-    setNewBlog("");
+    setNewBlog({
+      title: "",
+      author: "",
+      url: "",
+    });
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setNewBlog((prevState) => ({ ...prevState, [name]: value }));
-    console.log(newBlog);
+    //console.log(newBlog);
   };
 
   return (
@@ -32,6 +36,7 @@ const BlogForm = ({ createBlog }) => {
             name="author"
             value={newBlog.author}
             onChange={(event) => handleInputChange(event)}
+            className="authorInput"
           ></input>
         </div>
         <div>
@@ -40,6 +45,7 @@ const BlogForm = ({ createBlog }) => {
             name="title"
             value={newBlog.title}
             onChange={(event) => handleInputChange(event)}
+            className="titleInput"
           ></input>
         </div>
         <div>
@@ -48,6 +54,7 @@ const BlogForm = ({ createBlog }) => {
             name="url"
             value={newBlog.url}
             onChange={(event) => handleInputChange(event)}
+            className="urlInput"
           ></input>
           <button type="submit">Save</button>
         </div>
