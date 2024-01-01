@@ -31,6 +31,10 @@ const App = () => {
   const addBlog = async (blogObject) => {
     await blogService.postBlog(blogObject);
     blogFormRef.current.toggleVisibility();
+    setMessage(`${blogObject.title} by ${blogObject.author} added`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
     setX([...x, x + 1]);
   };
 
@@ -44,6 +48,10 @@ const App = () => {
     console.log("Deleting", blogid, blogauthor, blogtitle);
     if (window.confirm(`Remove blog ${blogtitle} by: ${blogauthor}?`)) {
       await blogService.deleteBlog(blogid);
+      setMessage(`${blogtitle} by ${blogauthor} removed`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
       setX([...x, x + 1]);
     }
   };
