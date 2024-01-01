@@ -56,7 +56,9 @@ const BlogForm = ({ createBlog }) => {
             onChange={(event) => handleInputChange(event)}
             className="urlInput"
           ></input>
-          <button type="submit">Save</button>
+          <button id="save-button" type="submit">
+            Save
+          </button>
         </div>
       </form>
     </div>

@@ -27,7 +27,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
           </p>
           {blog.url} <br />
           <div>
-            <p>
+            <p className="blogLikesElement">
               likes {blog.likes}{" "}
               <button
                 onClick={() =>

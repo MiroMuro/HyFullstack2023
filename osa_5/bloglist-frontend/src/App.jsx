@@ -73,7 +73,11 @@ const App = () => {
     if (message === null) {
       return null;
     }
-    return <div className={status}>{message}</div>;
+    return (
+      <div id="notification" className={status}>
+        {message}
+      </div>
+    );
   };
 
   return (
