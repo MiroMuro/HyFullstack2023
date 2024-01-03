@@ -1,4 +1,18 @@
-const noteReducer = (state = [], action) => {
+const initialState = [
+  {
+    content: "Take out the trash",
+    important: true,
+    id: 1,
+  },
+  {
+    content: "Walk the dogs",
+    important: false,
+    id: 2,
+  },
+];
+
+const noteReducer = (state = initialState, action) => {
+  console.log("ACTION: ", action);
   switch (action.type) {
     case "NEW_NOTE":
       return [...state, action.payload];
