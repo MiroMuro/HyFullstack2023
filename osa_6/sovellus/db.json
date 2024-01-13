@@ -1,0 +1,29 @@
+{
+  "notes": [
+    {
+      "content": "The app state is in redux store",
+      "important": true,
+      "id": 1
+    },
+    {
+      "content": "State changes are made with actions",
+      "important": false,
+      "id": 2
+    },
+    {
+      "content": "Pepsi max tastes like coca cola",
+      "important": true,
+      "id": 3
+    },
+    {
+      "id": "ae5c",
+      "content": "google.com on parahsa dasdasd",
+      "important": false
+    },
+    {
+      "id": "f43f",
+      "content": "MOIMOIMOI",
+      "important": false
+    }
+  ]
+}

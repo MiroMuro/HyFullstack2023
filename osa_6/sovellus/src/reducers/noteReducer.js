@@ -1,32 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = [
-  {
-    content: "Take out the trash",
-    important: true,
-    id: 1,
-  },
-  {
-    content: "Walk the dogs",
-    important: false,
-    id: 2,
-  },
-];
-
-const generateId = () => Number((Math.random() * 1000000).toFixed(0));
+import noteService from "../services/notes";
+const initialState = [];
 
 const noteSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    createNote(state, action) {
-      const content = action.payload;
-      state.push({
-        content,
-        important: false,
-        id: generateId(),
-      });
-    },
     toggleImportanceOf(state, action) {
       const id = action.payload;
       const noteToChange = state.find((n) => n.id === id);
@@ -40,8 +19,27 @@ const noteSlice = createSlice({
 
       return state.map((note) => (note.id !== id ? note : changedNote));
     },
+    appendNote(state, action) {
+      state.push(action.payload);
+    },
+    setNotes(state, action) {
+      return action.payload;
+    },
   },
 });
 
-export const { createNote, toggleImportanceOf } = noteSlice.actions;
+export const { toggleImportanceOf, appendNote, setNotes } = noteSlice.actions;
+
+export const initializeNotes = () => {
+  return async (dispatch) => {
+    const note = await noteService.getAll();
+    dispatch(setNotes(note));
+  };
+};
+export const createNote = (content) => {
+  return async (dispatch) => {
+    const note = await noteService.createNote(content);
+    dispatch(appendNote(note));
+  };
+};
 export default noteSlice.reducer;
