@@ -1,17 +1,18 @@
-import { add } from "../reducers/anecdoteReducer";
 import { useDispatch } from "react-redux";
-import { appendNotification } from "../reducers/notificationReducer";
-import { deleteNotification } from "../reducers/notificationReducer";
-import anecdotesService from "../services/anecdotes";
+import {
+  appendNotification,
+  deleteNotification,
+} from "../reducers/notificationReducer";
+import { postOneAnecdote } from "../reducers/anecdoteReducer";
+
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
   const addAnecdote = async (event) => {
     event.preventDefault();
     const anecdote = event.target.anecdote.value;
-    const postedAnecdote = await anecdotesService.postAnecdotes(anecdote);
-    dispatch(add(postedAnecdote));
-    event.target.anecdote.value = "";
+    dispatch(postOneAnecdote(anecdote));
+
     dispatch(appendNotification(`You added "${anecdote}"`));
     setTimeout(() => dispatch(deleteNotification("")), 5000);
   };
