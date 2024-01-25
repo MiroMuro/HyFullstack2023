@@ -2,18 +2,18 @@
   "notes": [
     {
       "content": "The app state is in redux store",
-      "important": true,
-      "id": 1
+      "important": false,
+      "id": "1"
     },
     {
       "content": "State changes are made with actions",
       "important": false,
-      "id": 2
+      "id": "2"
     },
     {
       "content": "Pepsi max tastes like coca cola",
       "important": true,
-      "id": 3
+      "id": "3"
     },
     {
       "id": "ae5c",
@@ -24,6 +24,51 @@
       "id": "f43f",
       "content": "MOIMOIMOI",
       "important": false
+    },
+    {
+      "id": "81a7",
+      "content": "Bomba",
+      "important": true
+    },
+    {
+      "id": "9aed",
+      "content": "swag up boje",
+      "important": true
+    },
+    {
+      "id": "07cb",
+      "content": "I want to buy this racing car",
+      "important": false
+    },
+    {
+      "id": "69da",
+      "content": "asdawd",
+      "important": true
+    },
+    {
+      "id": "2ecd",
+      "content": "noh?",
+      "important": true
+    },
+    {
+      "id": "0fd8",
+      "content": "sawdad",
+      "important": true
+    },
+    {
+      "id": "f67c",
+      "content": "qqqqqqqqq",
+      "important": true
+    },
+    {
+      "id": "ea81",
+      "content": "qqqqqqqqqqqqqqqqqqqq",
+      "important": true
+    },
+    {
+      "id": "32c7",
+      "content": "forced asdasd",
+      "important": true
     }
   ]
 }
