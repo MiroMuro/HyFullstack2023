@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/6564de4db15ec89a738ab2ec
+Content-Type: application/json
+
+{
+ "title": "Sasas",
+ "author":"David Swimmer",
+ "url":"ssswwwsss",
+ "likes": 500000
+}

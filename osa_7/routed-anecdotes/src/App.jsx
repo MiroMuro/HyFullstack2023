@@ -10,6 +10,8 @@ import {
   useMatch,
 } from "react-router-dom";
 import useField from "./hooks/index.js";
+import Table from "react-bootstrap/Table";
+
 const Anecdote = ({ anecdote }) => (
   <div>
     <h2>
@@ -24,14 +26,18 @@ const Anecdote = ({ anecdote }) => (
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>
-          <Link to={`anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>
-      ))}
-    </ul>
+    <Table bordered striped hover>
+      <th>Anecdotes</th>
+      <tbody>
+        {anecdotes.map((anecdote) => (
+          <tr key={anecdote.id}>
+            <td>
+              <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   </div>
 );
 
@@ -183,7 +189,7 @@ const App = () => {
   console.log(anecdote);
 
   return (
-    <div>
+    <div className="container">
       <h1>Software anecdotes</h1>
       <Link style={padding} to="/">
         Anecdotes
