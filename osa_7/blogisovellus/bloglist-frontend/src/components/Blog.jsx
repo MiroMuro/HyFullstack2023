@@ -1,60 +1,37 @@
-import Togglable from "./Togglable";
-import { useState } from "react";
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+import { useUser } from "../reducers/notificationreducer";
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
+  const user = useUser();
   const creatorOfBlog = blog.user.id === user.id ? true : false;
-  const [show, setShow] = useState(true);
+  console.log(creatorOfBlog);
+
   return (
     <div>
-      {show && (
-        <div
-          className="blog"
-          style={{ border: "2px solid black", padding: "10px", margin: "10px" }}
+      {!blog && <h1>Loading blog...</h1>}
+      <h1>{blog.title}</h1>
+      <div>
+        <a href={`${blog.url}`}>{blog.url}</a>
+      </div>
+      <div>
+        {blog.likes} likes
+        <button
+          onClick={() =>
+            updateBlog({
+              id: blog.id,
+              title: blog.title,
+              author: blog.author,
+              url: blog.url,
+              likes: blog.likes + 1,
+            })
+          }
         >
-          <p>
-            {blog.title}, {blog.author}{" "}
-            <button onClick={() => setShow(!show)}>View</button>
-          </p>
-        </div>
-      )}
-      {!show && (
-        <div
-          className="blog"
-          style={{ border: "2px solid black", padding: "10px", margin: "10px" }}
-        >
-          <p>
-            {blog.title}, {blog.author}{" "}
-            <button onClick={() => setShow(!show)}>Close</button>
-          </p>
-          {blog.url} <br />
-          <div>
-            <p className="blogLikesElement">
-              likes {blog.likes}{" "}
-              <button
-                onClick={() =>
-                  updateBlog({
-                    id: blog.id,
-                    title: blog.title,
-                    author: blog.author,
-                    url: blog.url,
-                    likes: blog.likes + 1,
-                  })
-                }
-              >
-                like
-              </button>
-            </p>
-            {user.name}
-            {creatorOfBlog && (
-              <button
-                onClick={() => deleteBlog(blog)}
-                style={{ backgroundColor: "red" }}
-              >
-                Delete
-              </button>
-            )}
-            {!creatorOfBlog}
-          </div>
-        </div>
+          like
+        </button>
+      </div>
+      <div>Added by {blog.user.name}</div>
+      {creatorOfBlog && (
+        <button style={{ color: "red" }} onClick={() => deleteBlog(blog)}>
+          Delete
+        </button>
       )}
     </div>
   );

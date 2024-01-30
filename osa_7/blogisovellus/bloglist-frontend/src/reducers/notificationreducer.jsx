@@ -21,7 +21,6 @@ const loginReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
       console.log("HELLo");
-      console.log(action.payload);
       window.localStorage.setItem(
         "loggedBlogger",
         JSON.stringify(action.payload)
@@ -29,7 +28,6 @@ const loginReducer = (state, action) => {
       setToken(action.payload.token);
       return action.payload;
     case "LOGOUT":
-      console.log(action.payload);
       window.localStorage.removeItem("loggedBlogger");
       return null;
     default:

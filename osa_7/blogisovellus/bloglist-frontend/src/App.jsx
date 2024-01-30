@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, useReducer } from "react";
+import { useState, useRef, useEffect } from "react";
 import Blog from "./components/Blog";
-import blogService from "./services/blogs";
+import Bloglist from "./components/Bloglist";
+import Userlist from "./components/Userlist";
 import LoginForm from "./components/loginForm";
 import loginService from "./services/login";
 import Toggable from "./components/Togglable";
+import Home from "./components/Home";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
-import notificationReducer from "./reducers/notificationreducer";
-import { NotificationContextProvider } from "./reducers/notificationreducer";
-import NotificationContext from "./reducers/notificationreducer";
-import { useContext } from "react";
+import User from "./components/User";
+import { Routes, Route, Link, Navigate, useMatch } from "react-router-dom";
 import {
   useNotifDispatch,
   useUserDispatch,
@@ -18,12 +18,12 @@ import {
 import "./index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAll, postBlog, updateBlog, deleteBlog } from "./services/blogs";
-import { login } from "./services/login";
+import { getAllUsers } from "./services/users";
+
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const [userData, setUsersData] = useState([]);
   const [message, setMessage] = useState(null);
 
   const userDispatch = useUserDispatch();
@@ -64,14 +64,20 @@ const App = () => {
 
   const bugs = result.data;
 
-  /*useEffect(() => {
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogger");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      userDispatch({ type: "LOGIN", payload: JSON.parse(loggedUserJSON) });
     }
-  }, []);*/
+  }, []);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const res = await getAllUsers();
+      setUsersData(res);
+    };
+    getUserData();
+  }, []);
 
   const addBlog = (blogObject) => {
     newBlogMutation.mutate(blogObject);
@@ -86,8 +92,8 @@ const App = () => {
   };
 
   const addLikeToBlog = async (blogObject) => {
+    console.log("Täällä", blogObject);
     blogVoteMutation.mutate(blogObject);
-
     notifDispatch({
       type: "VOTE",
       payload: `Voted "${blogObject.title}" by ${blogObject.author}`,
@@ -134,6 +140,16 @@ const App = () => {
     }
   };
 
+  const userMatch = useMatch("/users/:id");
+  const matchedUser = userMatch
+    ? userData.find((user) => user.id === userMatch.params.id)
+    : null;
+
+  const blogMatch = useMatch("/blogs/:id");
+  const matchedBlog = blogMatch
+    ? bugs.find((blog) => blog.id === blogMatch.params.id)
+    : null;
+
   return (
     <div>
       {!theuser && (
@@ -169,23 +185,34 @@ const App = () => {
               Logout
             </button>
           </div>
-          <Toggable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Toggable>
+
           <br />
-          {!bugs && <div>Loading....</div>}
-          {bugs &&
-            bugs
-              .sort((a, b) => (a.likes > b.likes ? 1 : -1))
-              .map((blog) => (
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/blogs/:id"
+              element={
                 <Blog
-                  key={blog.id}
+                  blog={matchedBlog}
                   updateBlog={addLikeToBlog}
-                  blog={blog}
                   deleteBlog={removeBlog}
-                  user={theuser}
                 />
-              ))}
+              }
+            />
+            <Route
+              path="/blogs"
+              element={
+                <Bloglist
+                  blogs={bugs}
+                  updateBlog={addLikeToBlog}
+                  deleteBlog={removeBlog}
+                  createBlog={addBlog}
+                />
+              }
+            />
+            <Route path="/users/:id/" element={<User user={matchedUser} />} />
+            <Route path="/users" element={<Userlist userData={userData} />} />
+          </Routes>
         </div>
       )}
     </div>

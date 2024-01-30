@@ -26,7 +26,6 @@ export const updateBlog = (updatedBlog) => {
   const config = {
     headers: { Authorization: token },
   };
-  console.log("HERE", updatedBlog);
   const res = axios
     .put(`${baseUrl}/${updatedBlog.id}`, updatedBlog, config)
     .then((res) => res.data);
