@@ -32,6 +32,15 @@ export const updateBlog = (updatedBlog) => {
   return res;
 };
 
+export const appendCommentToBlog = (obj) => {
+  console.log("TÄÄLLÄ NÄIN", obj.blogId);
+  console.log(obj.commentJson);
+  const res = axios
+    .post(`${baseUrl}/${obj.blogId}/comments`, obj.commentJson)
+    .then((res) => res.data);
+  return res;
+};
+
 export const deleteBlog = async (blogToDelete) => {
   const config = {
     headers: { Authorization: token },

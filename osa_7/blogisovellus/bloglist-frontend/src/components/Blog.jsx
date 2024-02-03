@@ -1,9 +1,10 @@
 import { useUser } from "../reducers/notificationreducer";
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+import CommentForm from "./CommentForm";
+const Blog = ({ blog, updateBlog, deleteBlog, addCommentMutation }) => {
   const user = useUser();
   const creatorOfBlog = blog.user.id === user.id ? true : false;
   console.log(creatorOfBlog);
-
+  console.log(blog);
   return (
     <div>
       {!blog && <h1>Loading blog...</h1>}
@@ -28,11 +29,19 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
         </button>
       </div>
       <div>Added by {blog.user.name}</div>
+
       {creatorOfBlog && (
         <button style={{ color: "red" }} onClick={() => deleteBlog(blog)}>
           Delete
         </button>
       )}
+      <CommentForm blogId={blog.id} addCommentMutation={addCommentMutation} />
+      <h2>Comments</h2>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={comment.id}>{comment.content}</li>
+        ))}
+      </ul>
     </div>
   );
 };

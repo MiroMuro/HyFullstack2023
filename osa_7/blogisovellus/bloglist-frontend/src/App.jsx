@@ -6,7 +6,7 @@ import LoginForm from "./components/loginForm";
 import loginService from "./services/login";
 import Toggable from "./components/Togglable";
 import Home from "./components/Home";
-import BlogForm from "./components/BlogForm";
+import Navbar from "./components/Navbar";
 import Notification from "./components/Notification";
 import User from "./components/User";
 import { Routes, Route, Link, Navigate, useMatch } from "react-router-dom";
@@ -17,7 +17,13 @@ import {
 } from "./reducers/notificationreducer";
 import "./index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAll, postBlog, updateBlog, deleteBlog } from "./services/blogs";
+import {
+  getAll,
+  postBlog,
+  updateBlog,
+  deleteBlog,
+  appendCommentToBlog,
+} from "./services/blogs";
 import { getAllUsers } from "./services/users";
 
 const App = () => {
@@ -57,13 +63,19 @@ const App = () => {
     },
   });
 
+  const addCommentMutation = useMutation({
+    mutationFn: appendCommentToBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bugs"] });
+    },
+  });
+
   const result = useQuery({
     queryKey: ["bugs"],
     queryFn: getAll,
   });
 
   const bugs = result.data;
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogger");
     if (loggedUserJSON) {
@@ -77,6 +89,7 @@ const App = () => {
       setUsersData(res);
     };
     getUserData();
+    result.refetch();
   }, []);
 
   const addBlog = (blogObject) => {
@@ -119,39 +132,19 @@ const App = () => {
     }
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      userDispatch({ type: "LOGIN", payload: user });
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      notifDispatch({
-        type: "BADCREDENTIALS",
-        payload: "Wrong username or password!",
-      });
-      setTimeout(() => {
-        notifDispatch({ type: null });
-      }, 5000);
-    }
-  };
-
   const userMatch = useMatch("/users/:id");
   const matchedUser = userMatch
     ? userData.find((user) => user.id === userMatch.params.id)
     : null;
 
   const blogMatch = useMatch("/blogs/:id");
+
   const matchedBlog = blogMatch
     ? bugs.find((blog) => blog.id === blogMatch.params.id)
     : null;
-
   return (
     <div>
+      <Navbar />
       {!theuser && (
         <div>
           <div>
@@ -162,7 +155,6 @@ const App = () => {
                 password={password}
                 setUsername={setUsername}
                 setPassword={setPassword}
-                handleLogin={handleLogin}
               />
             </Toggable>
           </div>
@@ -171,48 +163,53 @@ const App = () => {
 
       {theuser && (
         <div>
-          <div>
-            <Notification message={message} status={"success"} />
-          </div>
-          <h1>Blogs</h1>
-          <h2>{theuser.name} logged in</h2>
-          <div>
-            <button
-              onClick={() => {
-                userDispatch({ type: "LOGOUT", payload: "swag" });
-              }}
-            >
-              Logout
-            </button>
-          </div>
+          {bugs && (
+            <div>
+              <div>
+                <Notification message={message} status={"success"} />
+              </div>
+              <h1>Blogs</h1>
+              <h2>{theuser.name} logged in</h2>
+              <div></div>
 
-          <br />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/blogs/:id"
-              element={
-                <Blog
-                  blog={matchedBlog}
-                  updateBlog={addLikeToBlog}
-                  deleteBlog={removeBlog}
+              <br />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route
+                  path="/blogs"
+                  element={
+                    <Bloglist
+                      blogs={bugs}
+                      updateBlog={addLikeToBlog}
+                      deleteBlog={removeBlog}
+                      createBlog={addBlog}
+                    />
+                  }
                 />
-              }
-            />
-            <Route
-              path="/blogs"
-              element={
-                <Bloglist
-                  blogs={bugs}
-                  updateBlog={addLikeToBlog}
-                  deleteBlog={removeBlog}
-                  createBlog={addBlog}
+                <Route
+                  path="/blogs/:id"
+                  element={
+                    <Blog
+                      blog={matchedBlog}
+                      updateBlog={addLikeToBlog}
+                      deleteBlog={removeBlog}
+                      addCommentMutation={addCommentMutation}
+                    />
+                  }
                 />
-              }
-            />
-            <Route path="/users/:id/" element={<User user={matchedUser} />} />
-            <Route path="/users" element={<Userlist userData={userData} />} />
-          </Routes>
+
+                <Route
+                  path="/users/:id/"
+                  element={<User user={matchedUser} />}
+                />
+                <Route
+                  path="/users"
+                  element={<Userlist userData={userData} />}
+                />
+              </Routes>
+            </div>
+          )}
+          {!bugs && <div>Loading....</div>}
         </div>
       )}
     </div>
