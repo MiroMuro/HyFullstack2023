@@ -1,45 +1,72 @@
 import PropTypes from "prop-types";
-
-const loginForm = ({
+import { Button, Checkbox, Form, Input } from "antd";
+import { login } from "../services/login";
+import {
+  useUserDispatch,
+  useNotifDispatch,
+} from "../reducers/notificationreducer";
+const LoginForm = ({
   username,
   password,
   setUsername,
   setPassword,
   handleLogin,
 }) => {
+  const userDispatch = useUserDispatch();
+  const notifDispatch = useNotifDispatch();
+
+  const handleLoginXD = async (values) => {
+    //event.preventDefault();
+    const password = values.password;
+    const username = values.username;
+    try {
+      const user = await login({
+        username,
+        password,
+      });
+      userDispatch({ type: "LOGIN", payload: user });
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      notifDispatch({
+        type: "BADCREDENTIALS",
+        payload: "Wrong username or password!",
+      });
+      setTimeout(() => {
+        notifDispatch({ type: null });
+      }, 5000);
+    }
+  };
+
   return (
     <div>
-      <h1>Log in to application</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          username:
-          <input
-            id="username"
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          ></input>
-        </div>
-        <div>
-          password:
-          <input
-            id="password"
-            type="text"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          ></input>
-        </div>
-        <button id="login-button" type="submit">
-          Login
-        </button>
-      </form>
+      <h1>Log in to Blog App</h1>
+      <Form name="loginForm" style={{ maxWidth: 300 }} onFinish={handleLoginXD}>
+        <Form.Item
+          label="username"
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };
 
-loginForm.propTypes = {
+LoginForm.propTypes = {
   username: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
   setUsername: PropTypes.func.isRequired,
@@ -47,4 +74,4 @@ loginForm.propTypes = {
   handleLogin: PropTypes.func.isRequired,
 };
 
-export default loginForm;
+export default LoginForm;

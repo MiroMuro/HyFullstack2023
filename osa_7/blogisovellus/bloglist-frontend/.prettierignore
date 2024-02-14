@@ -1,6 +1,0 @@
-
-# Ignore artifacts:
-node_modules
-cypress
-coverage
-dist
