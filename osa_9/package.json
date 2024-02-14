@@ -1,16 +1,15 @@
 {
-  "name": "typescriptdemo",
+  "name": "tsexample",
   "version": "1.0.0",
-  "description": "Typescript demo",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "ts-node": "ts-node",
+    "calculate": "ts-node calculator.ts",
+    "calculateBmi": "ts-node bmiCalculator.ts",
+    "calculateExercises": "ts-node excerciseCalculator",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Miro Laukkanen",
-  "license": "ISC",
-  "devDependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
-  }
+  "author": "",
+  "license": "ISC"
 }

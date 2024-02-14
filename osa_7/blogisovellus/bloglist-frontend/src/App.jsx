@@ -9,6 +9,7 @@ import Home from "./components/Home";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import User from "./components/User";
+import Navbar from "./components/Navbar";
 import { Routes, Route, Link, Navigate, useMatch } from "react-router-dom";
 import {
   useNotifDispatch,
@@ -152,10 +153,12 @@ const App = () => {
 
   return (
     <div>
+      <Navbar />
       {!theuser && (
         <div>
           <div>
             <Notification status={"error"} />
+
             <Toggable buttonLabel="login">
               <LoginForm
                 username={username}
