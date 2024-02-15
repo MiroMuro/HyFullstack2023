@@ -2,18 +2,29 @@ interface HeightWeight {
   height: number;
   weight: number;
 }
+interface HeightWeightBmi {
+  height: number;
+  weight: number;
+  bmi: string;
+}
 
+interface Error {
+  error: string;
+}
 const parameterParser = (args: string[]): HeightWeight => {
-  if (args.length < 4) throw new Error("Not enough arguments");
-  if (args.length > 4) throw new Error("Too many arguments");
+  if (args.length < 2) throw new Error();
+  if (args.length > 2) throw new Error();
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      height: Number(args[2]),
-      weight: Number(args[3]),
-    };
+  if (isNaN(Number(args[0])) || isNaN(Number(args[1]))) {
+    throw new Error();
+  }
+  if (Number(args[0]) == 0 || Number(args[1]) == 0) {
+    throw new Error();
   } else {
-    throw new Error("Arguments were not numbers!");
+    return {
+      height: Number(args[0]),
+      weight: Number(args[1]),
+    };
   }
 };
 
@@ -32,13 +43,11 @@ const calculateBmi = (height: number, kg: number): string => {
   return "";
 };
 
-try {
-  const { height, weight } = parameterParser(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-  let errorMessage = "Something bad happened";
-  if (error instanceof Error) {
-    errorMessage += " Error " + error.message;
-  }
-  console.log(errorMessage);
-}
+export const bmiCalc = (heightAndWeight: string[]): HeightWeightBmi | Error => {
+  const { height, weight } = parameterParser(heightAndWeight);
+  return {
+    height: height,
+    weight: weight,
+    bmi: calculateBmi(height, weight),
+  };
+};
