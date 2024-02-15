@@ -1,5 +1,5 @@
-type Operation = "multiply" | "add" | "divide";
-type Result = number | string;
+//type Operation = "multiply" | "add" | "divide";
+//type Result = number | string;
 
 const calculator = (a: number, b: number, op: string): number => {
   switch (op) {

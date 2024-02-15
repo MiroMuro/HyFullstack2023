@@ -11,6 +11,24 @@ interface HeightWeightBmi {
 interface Error {
   error: string;
 }
+
+//const parameterParserCLI = (args: string[]): HeightWeight => {
+//  if (args.length < 4) throw new Error();
+//  if (args.length > 4) throw new Error();
+//
+//  if (isNaN(Number(args[2])) || isNaN(Number(args[3]))) {
+//    throw new Error();
+//  }
+//  if (Number(args[0]) == 0 || Number(args[1]) == 0) {
+//    throw new Error();
+//  } else {
+//    return {
+//      height: Number(args[0]),
+//      weight: Number(args[1]),
+//    };
+//  }
+//};
+
 const parameterParser = (args: string[]): HeightWeight => {
   if (args.length < 2) throw new Error();
   if (args.length > 2) throw new Error();
