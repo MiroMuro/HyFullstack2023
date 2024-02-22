@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.json());
 const PORT = 3001;
 
 app.get("/api/ping", (_req, res) => {
