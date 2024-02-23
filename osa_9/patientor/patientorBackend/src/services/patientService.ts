@@ -4,6 +4,7 @@ import {
   Patient,
   NonSensitivePatient,
   NewPatient,
+  Gender
 } from "../interfaces/patient";
 
 const patientList: Patient[] = data;
