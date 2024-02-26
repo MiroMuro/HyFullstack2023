@@ -4,14 +4,17 @@ import { Route, Link, Routes, useMatch } from "react-router-dom";
 import { Button, Divider, Container, Typography } from "@mui/material";
 
 import { apiBaseUrl } from "./constants";
-import { Patient } from "./types";
+import { Diagnosis, Patient } from "./types";
 
+import diagnosisService from "./services/diagnoses";
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
 import SinglePatientPage from "./components/SinglePatientPage";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+
   useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 
@@ -20,13 +23,20 @@ const App = () => {
       const patients = await patientService.getAll();
       setPatients(patients);
     };
+
+    const fetchDiagnoses = async () => {
+      const diagnoses = await diagnosisService.getAll();
+      setDiagnoses(diagnoses);
+    };
     void fetchPatientList();
+    void fetchDiagnoses();
   }, []);
 
   const match = useMatch("/:id");
   const patient: Patient | undefined = patients.find(
     (patient) => patient.id === match?.params.id
   );
+
   return (
     <div className="App">
       <Container>
@@ -46,7 +56,9 @@ const App = () => {
           />
           <Route
             path="/:id"
-            element={<SinglePatientPage patient={patient} />}
+            element={
+              <SinglePatientPage patient={patient} diagnoses={diagnoses} />
+            }
           />
         </Routes>
       </Container>

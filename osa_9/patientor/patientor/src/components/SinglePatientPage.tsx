@@ -1,11 +1,27 @@
-import { Patient, Gender } from "../types";
+import { Patient, Gender, Diagnosis } from "../types";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import TransgenderIcon from "@mui/icons-material/Transgender";
+
 interface Props {
   patient: Patient | undefined;
+  diagnoses: Diagnosis[];
 }
-const SinglePatientPage = ({ patient }: Props) => {
+const SinglePatientPage = ({ patient, diagnoses }: Props) => {
+  if (!patient) {
+    return undefined;
+  }
+
+  const codes: string[] = [];
+
+  patient.entries.forEach((entry) =>
+    entry.diagnosisCodes?.forEach((code) => codes.push(code))
+  );
+
+  const patientsDiagnoses: Diagnosis[] = diagnoses.filter((diagnose) => {
+    return codes.some((code) => code === diagnose.code);
+  });
+
   return (
     <div>
       {" "}
@@ -33,9 +49,11 @@ const SinglePatientPage = ({ patient }: Props) => {
               ))}
             </span>
             <ul>
-              {patient.entries.map((entry) =>
-                entry.diagnosisCodes?.map((diagnosis) => <li>{diagnosis}</li>)
-              )}
+              {patientsDiagnoses.map((diagnose) => (
+                <li>
+                  {diagnose.code} {diagnose.name}
+                </li>
+              ))}
             </ul>
           </div>
         )}
