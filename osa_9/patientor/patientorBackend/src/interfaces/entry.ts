@@ -37,28 +37,3 @@ export enum healthCheckRating {
   "HighRisk" = 2,
   "CriticalRisk" = 3,
 }
-
-export type Entry =
-  | HospitalEntry
-  | OccupationalHealthcareEntry
-  | HealthCheckEntry;
-
-export interface Patient {
-  id: string;
-  name: string;
-  dateOfBirth: string;
-  ssn: string;
-  gender: Gender;
-  occupation: string;
-  entries: Entry[];
-}
-
-export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;
-
-export type NewPatient = Omit<Patient, "id">;
-
-export enum Gender {
-  Male = "male",
-  Female = "female",
-  Other = "other",
-}

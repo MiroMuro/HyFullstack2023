@@ -16,16 +16,17 @@ const App = () => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatientList = async () => {
+      console.log("mitä vittua");
       const patients = await patientService.getAll();
       setPatients(patients);
     };
     void fetchPatientList();
   }, []);
-  console.log(patients);
+
   const match = useMatch("/:id");
-  const patient: Patient = patients.find(
+  const patient: Patient | undefined = patients.find(
     (patient) => patient.id === match?.params.id
-  )!;
+  );
   return (
     <div className="App">
       <Container>

@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from "./interfaces/patient";
+import { Gender, Patient, Entry } from "./interfaces/patient";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -18,6 +18,34 @@ const isGender = (gender: string): gender is Gender => {
   return Object.values(Gender)
     .map((g) => g.toString())
     .includes(gender);
+};
+
+const isEntry = (entry: unknown): entry is Entry => {
+  if (!entry || typeof entry !== "object") {
+    return false;
+  }
+  if (
+    "description" in entry &&
+    "date" in entry &&
+    "specialist" in entry &&
+    "type" in entry
+  ) {
+    switch (entry.type) {
+      case "HealthCheck":
+        const x = "healthCheckRating" in entry ? true : false;
+        return x;
+      case "OccupationalHealthcare":
+        const y = "employerName" in entry ? true : false;
+        return y;
+      case "Hospital":
+        const z = "discharge" in entry ? true : false;
+        return z;
+      default:
+        return false;
+    }
+  } else {
+    return false;
+  }
 };
 
 const parseSsn = (ssn: unknown): string => {
@@ -54,26 +82,47 @@ const parseOccupation = (occupation: unknown): string => {
   }
   return occupation;
 };
+const parseEntries = (entries: unknown): Entry[] => {
+  if (Array.isArray(entries)) {
+    entries.forEach((entry) => {
+      if (!isEntry(entry)) {
+        throw new Error("AAIDDSS WRONG ENTRY");
+      }
+    });
+    return entries as Entry[];
+  }
+  throw new Error("Entries was not an array.");
+};
 
-const toNewPatient = (object: unknown): NewPatient => {
+const parseId = (id: unknown): string => {
+  if (!isString(id)) {
+    throw new Error("Incorrect or missing id" + id);
+  }
+  return id;
+};
+
+const toNewPatient = (object: unknown): Patient => {
   if (!object || typeof object !== "object") {
     throw new Error("incorrect or missing data");
   }
 
   if (
+    "id" in object &&
     "name" in object &&
     "dateOfBirth" in object &&
     "ssn" in object &&
     "gender" in object &&
-    "occupation" in object
+    "occupation" in object &&
+    "entries" in object
   ) {
-    const newPatient: NewPatient = {
+    const newPatient: Patient = {
+      id: parseId(object.id),
       name: parseName(object.name),
       dateOfBirth: parseDate(object.dateOfBirth),
       ssn: parseSsn(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseOccupation(object.occupation),
-      entries: [],
+      entries: parseEntries(object.entries),
     };
 
     return newPatient;

@@ -3,19 +3,9 @@ import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 interface Props {
-  patient: Patient;
+  patient: Patient | undefined;
 }
 const SinglePatientPage = ({ patient }: Props) => {
-  const genderValue = (gender: Gender) => {
-    if (patient.gender === Gender.Female) {
-      return <FemaleIcon />;
-    } else if (patient.gender === Gender.Male) {
-      return <MaleIcon />;
-    } else if (patient.gender === Gender.Other) {
-      return <TransgenderIcon />;
-    }
-  };
-
   return (
     <div>
       {" "}
@@ -23,10 +13,30 @@ const SinglePatientPage = ({ patient }: Props) => {
         {patient && (
           <div>
             <h2>
-              {patient.name} {genderValue(patient.gender)}
+              {patient.name}{" "}
+              {patient.gender == Gender.Male ? <MaleIcon /> : null}
+              {patient.gender == Gender.Female ? <FemaleIcon /> : null}
+              {patient.gender == Gender.Other ? <TransgenderIcon /> : null}
             </h2>
             <div>ssh: {patient.ssn}</div>
             <div>Occupation: {patient.occupation}</div>
+            <br />
+            <h3>entries</h3>
+            <span>
+              {patient.entries.map((entry) => (
+                <div>
+                  <div>{entry.date}</div>
+                  <span>
+                    <i>{entry.description}</i>
+                  </span>
+                </div>
+              ))}
+            </span>
+            <ul>
+              {patient.entries.map((entry) =>
+                entry.diagnosisCodes?.map((diagnosis) => <li>{diagnosis}</li>)
+              )}
+            </ul>
           </div>
         )}
       </div>
