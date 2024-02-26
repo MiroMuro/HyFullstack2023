@@ -4,11 +4,12 @@ import {
   Patient,
   NonSensitivePatient,
   NewPatient,
-  Gender
 } from "../interfaces/patient";
 
 const patientList: Patient[] = data;
+
 const id: string = uuidv4();
+
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
   return patientList.map((patient) => ({
     id: patient.id,
@@ -16,6 +17,7 @@ const getNonSensitivePatients = (): NonSensitivePatient[] => {
     dateOfBirth: patient.dateOfBirth,
     gender: patient.gender,
     occupation: patient.occupation,
+    entries: patient.entries,
   }));
 };
 
