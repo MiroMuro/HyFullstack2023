@@ -27,16 +27,16 @@ interface SickLeave {
   endDate: string;
 }
 
-interface HealthCheckEntry extends BaseEntry {
+export interface HealthCheckEntry extends BaseEntry {
   healthCheckRating: healthCheckRating;
   type: "HealthCheck";
 }
-interface OccupationalHealthcareEntry extends BaseEntry {
+export interface OccupationalHealthcareEntry extends BaseEntry {
   employerName: string;
   sickLeave?: SickLeave;
   type: "OccupationalHealthcare";
 }
-interface HospitalEntry extends BaseEntry {
+export interface HospitalEntry extends BaseEntry {
   discharge: Discharge;
   type: "Hospital";
 }
