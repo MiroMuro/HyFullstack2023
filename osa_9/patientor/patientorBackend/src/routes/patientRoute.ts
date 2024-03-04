@@ -1,6 +1,7 @@
 import express from "express";
 import patientService from "../services/patientService";
 import toNewPatient from "../utils";
+import { isEntry } from "../utils";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
@@ -29,6 +30,21 @@ router.post("/", (_req, res) => {
       errorMessage += " Error " + error.message;
     }
     res.status(400).send(errorMessage);
+  }
+});
+router.post("/:id/entries", (req, res) => {
+  const patient = patientService.findById(req.params.id);
+  if (!patient) {
+    res.status(400).send("Patient not found");
+  } else if (!isEntry(req.body)) {
+    res.status(400).send("Invalid entry");
+  } else {
+    const newEntry = req.body;
+    const updatedPatientEntries = patientService.updatePatientEntries(
+      patient.id,
+      newEntry
+    );
+    res.status(200).json(updatedPatientEntries);
   }
 });
 

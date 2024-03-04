@@ -1,5 +1,5 @@
 import { Gender, Patient, Entry } from "./interfaces/patient";
-
+import Diagnosis from "./interfaces/diagnosis";
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
@@ -20,7 +20,7 @@ const isGender = (gender: string): gender is Gender => {
     .includes(gender);
 };
 
-const isEntry = (entry: unknown): entry is Entry => {
+export const isEntry = (entry: unknown): entry is Entry => {
   if (!entry || typeof entry !== "object") {
     return false;
   }
@@ -99,6 +99,16 @@ const parseId = (id: unknown): string => {
     throw new Error("Incorrect or missing id" + id);
   }
   return id;
+};
+
+export const parseDiagnosisCodes = (
+  object: unknown
+): Array<Diagnosis["code"]> => {
+  if (!object || typeof object !== "object" || !("diagnosisCodes" in object)) {
+    //trust the data this time.
+    return [] as Array<Diagnosis["code"]>;
+  }
+  return object.diagnosisCodes as Array<Diagnosis["code"]>;
 };
 
 const toNewPatient = (object: unknown): Patient => {

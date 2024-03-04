@@ -1,14 +1,15 @@
 const { v4: uuidv4 } = require("uuid");
 import data from "../../patients";
+import { EntryWithoutId } from "../interfaces/entry";
 import {
   Patient,
   NonSensitivePatient,
   NewPatient,
 } from "../interfaces/patient";
-
+import { parseDiagnosisCodes } from "../utils";
 const patientList: Patient[] = data;
 
-const id: string = uuidv4();
+const newId: string = uuidv4() as string;
 
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
   return patientList.map((patient) => ({
@@ -32,7 +33,7 @@ const findById = (id: string): Patient | undefined => {
 
 const addPatient = (patient: NewPatient): NewPatient => {
   const newPatient = {
-    id: id,
+    id: newId,
     ...patient,
   };
 
@@ -41,9 +42,27 @@ const addPatient = (patient: NewPatient): NewPatient => {
   return newPatient;
 };
 
+const updatePatientEntries = (
+  patientId: string,
+  entry: EntryWithoutId
+): Patient | undefined => {
+  const patient = findById(patientId);
+  if (patient) {
+    const newEntry = {
+      id: newId,
+      diagnosisCodes: parseDiagnosisCodes(entry.diagnosisCodes),
+      ...entry,
+    };
+    patient.entries.push(newEntry);
+    return patient;
+  }
+  return undefined;
+};
+
 export default {
   getNonSensitivePatients,
   getPatients,
   findById,
   addPatient,
+  updatePatientEntries,
 };
