@@ -19,6 +19,9 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (_req, res) => {
+  console.log("HERRO");
+  console.log(_req.body);
+
   try {
     const newPatient = toNewPatient(_req.body);
 

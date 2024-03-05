@@ -1,17 +1,32 @@
 import axios from "axios";
-import { Patient, PatientFormValues } from "../types";
+import { v4 as uuidv4 } from "uuid";
+const newId: string = uuidv4() as string;
+
+import { Entry, Patient, PatientFormValues } from "../types";
 
 import { apiBaseUrl } from "../constants";
 
 const getAll = async () => {
   const { data } = await axios.get<Patient[]>(`${apiBaseUrl}/patients`);
-  console.log("täällä", data);
 
   return data;
 };
 
 const create = async (object: PatientFormValues) => {
-  const { data } = await axios.post<Patient>(`${apiBaseUrl}/patients`, object);
+  const newPatient = { ...object, id: newId, entries: [] };
+  const { data } = await axios.post<Patient>(
+    `${apiBaseUrl}/patients`,
+    newPatient
+  );
+
+  return data;
+};
+
+const addEntry = async (id: string, object: Entry) => {
+  const { data } = await axios.post<Entry>(
+    `${apiBaseUrl}/patients/${id}/entries`,
+    object
+  );
 
   return data;
 };
@@ -19,4 +34,5 @@ const create = async (object: PatientFormValues) => {
 export default {
   getAll,
   create,
+  addEntry,
 };

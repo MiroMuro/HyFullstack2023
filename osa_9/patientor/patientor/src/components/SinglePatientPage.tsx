@@ -6,12 +6,19 @@ import HealthcheckEntryComponent from "./Entries/HealthcheckEntry";
 import HospitalEntryComponent from "./Entries/HospitalEntry";
 import OccupationalEntryComponent from "./Entries/OccupationalEntry";
 import { Button } from "@mui/material";
-
+import { useState } from "react";
+import AddEntryModal from "./AddEntryModal";
 interface Props {
   patient: Patient | undefined;
   diagnoses: Diagnosis[];
 }
 const SinglePatientPage = ({ patient, diagnoses }: Props) => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const onClose = (): void => {
+    setModalOpen(false);
+  };
+
   if (!patient) {
     return undefined;
   }
@@ -74,7 +81,14 @@ const SinglePatientPage = ({ patient, diagnoses }: Props) => {
                 <div>{EntryDetails(entry)!}</div>
               ))}
             </ul>
-            <Button variant="contained">Add a new entry</Button>
+            <AddEntryModal
+              modalOpen={modalOpen}
+              onClose={onClose}
+              id={patient.id}
+            />
+            <Button variant="contained" onClick={() => setModalOpen(true)}>
+              Add a new entry
+            </Button>
           </div>
         )}
       </div>

@@ -1,11 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 import data from "../../patients";
 import { EntryWithoutId } from "../interfaces/entry";
-import {
-  Patient,
-  NonSensitivePatient,
-  NewPatient,
-} from "../interfaces/patient";
+import { Patient, NonSensitivePatient } from "../interfaces/patient";
 import { parseDiagnosisCodes } from "../utils";
 const patientList: Patient[] = data;
 
@@ -31,15 +27,12 @@ const findById = (id: string): Patient | undefined => {
   return patient;
 };
 
-const addPatient = (patient: NewPatient): NewPatient => {
-  const newPatient = {
-    id: newId,
-    ...patient,
-  };
+const addPatient = (patient: Patient): Patient => {
+  console.log("swag");
 
-  patientList.push(newPatient);
+  patientList.push(patient);
 
-  return newPatient;
+  return patient;
 };
 
 const updatePatientEntries = (
