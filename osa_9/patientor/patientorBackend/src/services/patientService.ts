@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 import data from "../../patients";
-import { EntryWithoutId } from "../interfaces/entry";
-import { Patient, NonSensitivePatient } from "../interfaces/patient";
+//import { EntryWithoutId } from "../interfaces/entry";
+import { Patient, NonSensitivePatient, Entry } from "../interfaces/patient";
 import { parseDiagnosisCodes } from "../utils";
 const patientList: Patient[] = data;
 
@@ -37,17 +37,19 @@ const addPatient = (patient: Patient): Patient => {
 
 const updatePatientEntries = (
   patientId: string,
-  entry: EntryWithoutId
-): Patient | undefined => {
+  entry: Entry
+): Entry[] | undefined => {
   const patient = findById(patientId);
   if (patient) {
-    const newEntry = {
-      id: newId,
+    const newEntry: Entry = {
       diagnosisCodes: parseDiagnosisCodes(entry.diagnosisCodes),
       ...entry,
     };
+    console.log("HERE", newEntry);
+    console.log("HERE", newId);
+
     patient.entries.push(newEntry);
-    return patient;
+    return patient.entries;
   }
   return undefined;
 };

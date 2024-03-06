@@ -23,8 +23,8 @@ interface Discharge {
   criteria: string;
 }
 interface SickLeave {
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface HealthCheckEntry extends BaseEntry {

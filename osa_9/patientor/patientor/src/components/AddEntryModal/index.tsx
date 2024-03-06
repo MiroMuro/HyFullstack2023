@@ -4,11 +4,12 @@ import AddEntryForm from "./AddEntryForm";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useState } from "react";
 import { red } from "@mui/material/colors";
-import { Entry } from "../../types";
+import { Patient } from "../../types";
 interface Props {
   id: string;
   modalOpen: boolean;
   onClose: () => void;
+  patient: Patient;
 }
 const AddEntryModal = (props: Props) => {
   const [entryType, setEntryType] = useState<string>();
@@ -45,7 +46,11 @@ const AddEntryModal = (props: Props) => {
             Occupational Healthcare
           </Button>
         </span>
-        <AddEntryForm id={props.id} entryType={entryType} />
+        <AddEntryForm
+          id={props.id}
+          patient={props.patient}
+          entryType={entryType}
+        />
       </DialogContent>
     </Dialog>
   );

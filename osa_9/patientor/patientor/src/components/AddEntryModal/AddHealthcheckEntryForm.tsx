@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HealthCheckEntry } from "../../types";
+import { HealthCheckEntry, Patient } from "../../types";
 import {
   Button,
   FormControl,
@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import patientService from "../../services/patients";
 interface AddHealthcheckEntryFormProps {
-  id: string;
+  patient: Patient;
   // Define the props for the component here
 }
 
@@ -36,6 +36,7 @@ const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
     const { name, value } = event.target;
     setNewEntry({ ...newEntry, [name]: value });
   };
+
   const handleDiagnosisChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -46,13 +47,15 @@ const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
       diagnosisCodes: updatedDiagnosisCodes,
     });
   };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Call the addEntry method from services/patients.ts here
-    const data = await patientService.addEntry(props.id, newEntry);
-    await patientService.getAll();
+    props.patient.entries.push(newEntry);
+    const data = await patientService.addEntry(props.patient.id, newEntry);
     console.log("data", data);
   };
+
   return (
     <div>
       <h1>Health Check</h1>
