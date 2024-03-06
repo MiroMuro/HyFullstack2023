@@ -10,6 +10,7 @@ interface Props {
   modalOpen: boolean;
   onClose: () => void;
   patient: Patient;
+  codes: string[];
 }
 const AddEntryModal = (props: Props) => {
   const [entryType, setEntryType] = useState<string>();
@@ -47,9 +48,10 @@ const AddEntryModal = (props: Props) => {
           </Button>
         </span>
         <AddEntryForm
-          id={props.id}
           patient={props.patient}
           entryType={entryType}
+          onClose={() => props.onClose()}
+          codes={props.codes}
         />
       </DialogContent>
     </Dialog>

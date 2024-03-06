@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { HealthCheckEntry, Patient } from "../../types";
+import { Diagnosis, HealthCheckEntry, Patient } from "../../types";
 import {
   Button,
   FormControl,
   FormControlLabel,
   Input,
   InputLabel,
+  MenuItem,
+  OutlinedInput,
   Radio,
   RadioGroup,
+  Select,
 } from "@mui/material";
 import patientService from "../../services/patients";
+import { SelectChangeEvent } from "@mui/material";
+
 interface AddHealthcheckEntryFormProps {
   patient: Patient;
-  // Define the props for the component here
+  onClose: () => void;
+  diagnoses: Array<Diagnosis>;
 }
 
 const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
@@ -37,14 +43,14 @@ const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
     setNewEntry({ ...newEntry, [name]: value });
   };
 
-  const handleDiagnosisChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = event.target.value;
-    const updatedDiagnosisCodes = value.split(",").map((code) => code.trim());
+  const handleDiagnosisChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value);
     setNewEntry({
       ...newEntry,
-      diagnosisCodes: updatedDiagnosisCodes,
+      diagnosisCodes: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -54,6 +60,7 @@ const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
     props.patient.entries.push(newEntry);
     const data = await patientService.addEntry(props.patient.id, newEntry);
     console.log("data", data);
+    (await data) && props.onClose();
   };
 
   return (
@@ -75,8 +82,9 @@ const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
           </div>
           <div style={{ paddingBottom: "20px", width: "100%" }}>
             <FormControl style={{ width: "100%" }}>
-              <InputLabel>Date</InputLabel>
+              <InputLabel shrink>Date</InputLabel>
               <Input
+                type="date"
                 name="date"
                 value={newEntry.date}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -132,16 +140,24 @@ const AddHealthcheckEntryForm: React.FC<AddHealthcheckEntryFormProps> = (
               </RadioGroup>
             </FormControl>
           </div>
-          <div style={{ paddingBottom: "20px" }}>
-            <FormControl style={{ width: "100%" }}>
-              <InputLabel>Diagnosis codes</InputLabel>
-              <Input
+
+          <div>
+            <FormControl style={{ width: "70%", paddingBottom: "20px" }}>
+              <InputLabel>Diagnose codes</InputLabel>
+
+              <Select
                 name="diagnosisCodes"
-                value={newEntry.diagnosisCodes?.join(",") ?? ""}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleDiagnosisChange(event)
-                }
-              />
+                multiple
+                value={newEntry.diagnosisCodes}
+                input={<OutlinedInput label="Name" />}
+                onChange={handleDiagnosisChange}
+              >
+                {props.diagnoses.map((diagnosis) => (
+                  <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                    {diagnosis.code}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
           </div>
         </div>

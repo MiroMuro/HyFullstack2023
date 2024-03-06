@@ -1,10 +1,21 @@
 import React, { useState } from "react";
-import { HospitalEntry, Patient } from "../../types";
-import { FormControl, InputLabel, Input, Button } from "@mui/material";
+import { Diagnosis, HospitalEntry, Patient } from "../../types";
+import {
+  FormControl,
+  InputLabel,
+  Input,
+  Button,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 import patientService from "../../services/patients";
 interface AddHospitalEntryFormProps {
   // Define the props for the component here
   patient: Patient;
+  onClose: () => void;
+  diagnoses: Array<Diagnosis>;
 }
 
 const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
@@ -21,13 +32,13 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
       date: "",
       criteria: "",
     },
+    diagnosisCodes: [],
   });
-  console.log("props", props);
+
   // Define the event handlers here
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setNewEntry({ ...newEntry, [name]: value });
-    console.log("newEntry", newEntry);
   };
 
   const handleDischargeChange = (
@@ -40,16 +51,15 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
     });
   };
 
-  const handleDiagnosisChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = event.target.value;
-    const updatedDiagnosisCodes = value.split(",").map((code) => code.trim());
+  const handleDiagnosisChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value);
     setNewEntry({
       ...newEntry,
-      diagnosisCodes: updatedDiagnosisCodes,
+      diagnosisCodes: typeof value === "string" ? value.split(",") : value,
     });
-    console.log("newEntry", newEntry);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -57,6 +67,7 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
     props.patient.entries.push(newEntry);
     const data = await patientService.addEntry(props.patient.id, newEntry);
     console.log("data", data);
+    (await data) && props.onClose();
   };
   // Define any helper functions here
   return (
@@ -65,7 +76,7 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
       <form onSubmit={handleSubmit}>
         <div style={{ marginLeft: "auto", marginRight: 0 }}>
           <div>
-            <FormControl style={{ width: "100%" }}>
+            <FormControl style={{ paddingBottom: "20px", width: "100%" }}>
               <InputLabel>Description</InputLabel>
               <Input
                 name="description"
@@ -78,8 +89,9 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
           </div>
           <div style={{ paddingBottom: "20px", width: "100%" }}>
             <FormControl style={{ width: "100%" }}>
-              <InputLabel>Date</InputLabel>
+              <InputLabel shrink>Date</InputLabel>
               <Input
+                type="date"
                 name="date"
                 value={newEntry.date}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -102,8 +114,9 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
           </div>
           <div style={{ paddingBottom: "20px" }}>
             <FormControl style={{ width: "100%" }}>
-              <InputLabel>Discharge date </InputLabel>
+              <InputLabel shrink>Discharge date </InputLabel>
               <Input
+                type="date"
                 name="date"
                 value={newEntry.discharge.date}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -122,16 +135,24 @@ const AddHospitalEntryForm: React.FC<AddHospitalEntryFormProps> = (
               />
             </FormControl>
           </div>
-          <div style={{ paddingBottom: "20px" }}>
-            <FormControl style={{ width: "100%" }}>
-              <InputLabel>Diagnosis codes</InputLabel>
-              <Input
+
+          <div>
+            <FormControl style={{ width: "70%", paddingBottom: "20px" }}>
+              <InputLabel>Diagnose codes</InputLabel>
+
+              <Select
                 name="diagnosisCodes"
-                value={newEntry.diagnosisCodes?.join(",") ?? ""}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleDiagnosisChange(event)
-                }
-              />
+                multiple
+                value={newEntry.diagnosisCodes}
+                input={<OutlinedInput label="Name" />}
+                onChange={handleDiagnosisChange}
+              >
+                {props.diagnoses.map((diagnosis) => (
+                  <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                    {diagnosis.code}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
           </div>
         </div>

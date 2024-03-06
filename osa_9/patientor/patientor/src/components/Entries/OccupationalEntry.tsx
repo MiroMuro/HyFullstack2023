@@ -14,9 +14,7 @@ const OccuPationalEntryComponent = (props: {
       <h3>
         {props.entry.date}, {props.entry.employerName}
       </h3>
-      <p>
-        <i>{props.entry.description}</i>
-      </p>
+      <p>{props.entry.description}</p>
       <p>Diagnose by {props.entry.specialist}</p>
 
       <div>

@@ -28,8 +28,6 @@ const findById = (id: string): Patient | undefined => {
 };
 
 const addPatient = (patient: Patient): Patient => {
-  console.log("swag");
-
   patientList.push(patient);
 
   return patient;

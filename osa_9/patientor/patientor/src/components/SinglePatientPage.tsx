@@ -24,9 +24,6 @@ const SinglePatientPage = ({ patient, diagnoses }: Props) => {
   }
 
   const EntryDetails = (entry: Entry) => {
-    console.log("entry", entry);
-    console.log("entry type", entry.type);
-
     switch (entry.type) {
       case "Hospital":
         return <HospitalEntryComponent entry={entry} />;
@@ -89,6 +86,7 @@ const SinglePatientPage = ({ patient, diagnoses }: Props) => {
               onClose={onClose}
               id={patient.id}
               patient={patient}
+              codes={codes}
             />
             <Button variant="contained" onClick={() => setModalOpen(true)}>
               Add a new entry
