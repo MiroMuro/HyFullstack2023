@@ -1,6 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-
+import { Book } from "./types";
 let authors = [
   {
     name: "Robert Martin",
@@ -41,7 +41,7 @@ let authors = [
  * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conexión con el libro
  */
 
-let books = [
+let books: Book[] = [
   {
     title: "Clean Code",
     published: 2008,
@@ -93,20 +93,18 @@ let books = [
   },
 ];
 
-/*
-  you can remove the placeholder query once your first one has been implemented 
-*/
-
 const typeDefs = `
   type Query {
-    bookCount: Int!
+    bookCount(author: String): Int!
     authorCount: Int!
     allBooks: [Book!]!
+    allAuthors: [Author]
   }
   type Author {
     name: String!
     id: ID!
     born: Int
+    bookCount: Int
   }
   type Book {
     title: String!
@@ -119,9 +117,21 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
+    bookCount: (_root: any, args: { author: String }) => {
+      console.log(args);
+      if (!args) return books.length;
+      return books.filter((book) => book.author === args.author).length;
+    },
     authorCount: () => authors.length,
     allBooks: () => books,
+    allAuthors: () => {
+      return authors.map((author) => {
+        const bookCount = books.filter(
+          (book) => book.author === author.name
+        ).length;
+        return { ...author, bookCount };
+      });
+    },
   },
 };
 
