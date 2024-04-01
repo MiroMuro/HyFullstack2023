@@ -12,7 +12,7 @@ messageBoard
 dist
 dist-ssr
 *.local
-
+/osa_8/Osa8Esim
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
