@@ -1,6 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-import { Book } from "./types";
+import { Author, Book } from "./types";
 let authors = [
   {
     name: "Robert Martin",
@@ -95,9 +95,9 @@ let books: Book[] = [
 
 const typeDefs = `
   type Query {
-    bookCount(author: String): Int!
+    bookCount: Int!
     authorCount: Int!
-    allBooks(author: String): [Book!]!
+    allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author]
   }
   type Author {
@@ -117,23 +117,33 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: (_root: any, args: { author: String }) => {
-      console.log(args);
-      if (!args) return books.length;
-      return books.filter((book) => book.author === args.author).length;
+    bookCount: () => {
+      return books.length;
     },
     authorCount: () => authors.length,
-    allBooks: (_root: any, args: { author: String }) => {
-      if (!args) return books;
-      return books.filter((book) => book.author === args.author);
+    allBooks: (_root: any, args: { author: string; genre: string }) => {
+      if (args.author) {
+        return books.filter((book) => book.author === args.author);
+      }
+      if (args.genre) {
+        return books.filter((book) => book.genres.includes(args.genre));
+      }
+      if (args.author && args.genre) {
+        return books.filter(
+          (book) =>
+            book.author === args.author && book.genres.includes(args.genre)
+        );
+      }
+
+      return books;
     },
     allAuthors: () => {
-      return authors.map((author) => {
-        const bookCount = books.filter(
-          (book) => book.author === author.name
-        ).length;
-        return { ...author, bookCount };
-      });
+      return authors;
+    },
+  },
+  Author: {
+    bookCount: (root: Author) => {
+      return books.filter((book) => book.author === root.name).length;
     },
   },
 };
