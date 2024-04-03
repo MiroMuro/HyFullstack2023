@@ -5,7 +5,6 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 
 const App = () => {
-  const [page, setPage] = useState("authors");
   const padding = { padding: 5 };
   return (
     <Router>
