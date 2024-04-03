@@ -13,6 +13,7 @@ dist
 dist-ssr
 *.local
 /osa_8/Osa8Esim
+/osa_8/osa8reactesimerkki
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
