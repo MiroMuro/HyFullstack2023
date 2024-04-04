@@ -31,7 +31,7 @@ const NewBook = (props) => {
     setGenres(genres.concat(genre));
     setGenre("");
   };
-
+  
   return (
     <div>
       <form onSubmit={submit}>
