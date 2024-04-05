@@ -99,6 +99,9 @@ const typeDefs = `
       username: String!
       password: String!
     ): Token
+    addAsFriend(
+      name: String!
+    ): User
   }
 `;
 //GraphQL palvelimen tulee määritellä resolverit jokaiselle skeemassa määritellyn
@@ -129,10 +132,22 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPerson: async (_root: any, _args: any) => {
+    addPerson: async (_root: any, _args: any, context: any) => {
       const person = new PersonMongo({ ..._args });
+      const currentUser = context.currentUser;
+
+      if (!currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extentions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       try {
         await person.save();
+        currentUser.friends = currentUser.friends.concat(person);
+        await currentUser.save();
       } catch (error) {
         throw new GraphQLError("Saving person failed", {
           extensions: {
@@ -193,6 +208,31 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
     },
+    addAsFriend: async (
+      root: any,
+      args: any,
+      { currentUser }: { currentUser: any }
+    ) => {
+      const nonFriendAlready = (person: any) =>
+        !currentUser.friends
+          .map((f: any) => f._id.toString())
+          .includes(person._id.toString());
+
+      if (!currentUser) {
+        throw new GraphQLError("wrong credentials", {
+          extensions: { code: "BAD_USER_INPUT" },
+        });
+      }
+
+      const person = await PersonMongo.findOne({ name: args.name });
+      if (nonFriendAlready(person)) {
+        currentUser.friends = currentUser.friends.concat(person);
+      }
+
+      await currentUser.save();
+
+      return currentUser;
+    },
   },
 };
 
@@ -203,9 +243,11 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
-  context: async ({ req, res }) => {
+  context: async ({ req, _res }: { req: any; _res: unknown }) => {
+    //console.log("REQUEST: ", req);
+    //console.log("RESPONSE: ", res);
     const auth = req ? req.headers.authorization : null;
-    if (auth && auth.startsWith("Bearer ")) {
+    if (auth && auth.startsWith("bearer ")) {
       const decodedToken = jwt.verify(
         auth.substring(7),
         process.env.JWT_SECRET
@@ -213,10 +255,11 @@ startStandaloneServer(server, {
       const currentUser = await User.findById(decodedToken.id).populate(
         "friends"
       );
+      console.log("HERE");
+      console.log("CURRENTUSER: ", currentUser);
       return { currentUser };
     }
-    return null;
   },
-}).then(({ url }: { url: String }) => {
+}).then(({ url }: { url: string }) => {
   console.log(`Server ready at ${url}`);
 });
