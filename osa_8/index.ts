@@ -1,6 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-import { Author, Book } from "./types";
+import { Book } from "./types";
 //const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -22,7 +22,7 @@ mongoose
     console.log("Error connecring to MongoDB: ", error.message);
   });
 
-let authors = [
+/*let authors = [
   {
     name: "Robert Martin",
     id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
@@ -47,7 +47,7 @@ let authors = [
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
 ];
-
+*/
 /*
  * Suomi:
  * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
@@ -153,20 +153,45 @@ const typeDefs = `
 const resolvers = {
   Query: {
     bookCount: async () => BookMongo.collection.countDocuments(),
-
     authorCount: () => AuthorMongo.collection.countDocuments(),
     allBooks: async (_root: any, args: { author: string; genre: string }) => {
-      if (args.author) {
-        return books.filter((book) => book.author === args.author);
-      }
-      if (args.genre) {
-        return books.filter((book) => book.genres.includes(args.genre));
-      }
       if (args.author && args.genre) {
-        return books.filter(
-          (book) =>
-            book.author === args.author && book.genres.includes(args.genre)
-        );
+        try {
+          const authorFind = await AuthorMongo.findOne({
+            name: args.author,
+          });
+          if (!authorFind) {
+            return [];
+          }
+          const booksFound = await BookMongo.find({
+            genres: args.genre,
+            author: authorFind._id,
+          });
+          return booksFound;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      } else if (args.author) {
+        console.log(args);
+        try {
+          const authorFind = await AuthorMongo.findOne({
+            name: args.author,
+          });
+          return await BookMongo.find({ author: authorFind._id });
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      } else if (args.genre) {
+        try {
+          const bookslol = await BookMongo.find({ genres: args.genre });
+          return bookslol;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+        return books.filter((book) => book.genres.includes(args.genre));
       }
 
       return await BookMongo.find({});
@@ -174,8 +199,41 @@ const resolvers = {
     allAuthors: async () => await AuthorMongo.find({}),
   },
   Author: {
-    bookCount: (root: Author) => {
-      return books.filter((book) => book.author === root.name).length;
+    bookCount: async (root: any) => {
+      //The root may be an author or an book? Hence the if else
+      if (root.name) {
+        try {
+          const author = await AuthorMongo.findOne({ name: root.name });
+          const count = await BookMongo.collection.count({
+            author: author._id,
+          });
+          return count;
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        const author = await AuthorMongo.findOne({ name: root.author.name });
+        const count = await BookMongo.collection.count({ author: author._id });
+        return count;
+      }
+    },
+    id: (_root: any) => {
+      return _root._id;
+    },
+  },
+  Book: {
+    author: async (_root: any, _args: any) => {
+      //The root may be an Book or an author.
+      if (!_root.author.name) {
+        try {
+          const xd = await AuthorMongo.findOne({ _id: _root.author });
+          return xd;
+        } catch (error) {
+          console.log("Something went wrong mate");
+        }
+      } else {
+        return _root.author;
+      }
     },
   },
   Mutation: {
@@ -190,28 +248,27 @@ const resolvers = {
         const book = new BookMongo({ ...args, author: author });
 
         await book.save();
-        //console.log(book);
-        //console.log(author);
+
         console.log("Book saved to DB");
         return book;
       } catch (error) {
-        //console.log(book);
-        //console.log(author);
         console.log("Error saving book");
       }
     },
-    editAuthor: (_root: any, args: { name: string; setBornTo: number }) => {
-      if (authors.find((author) => author.name === args.name) === undefined) {
-        return null;
-      } else {
-        const authorxd: Author = authors.find(
-          (author) => author.name === args.name
-        ) as Author;
-        const updatedAuthor: Author = { ...authorxd, born: args.setBornTo };
-        authors = authors.map((author) =>
-          author.name === args.name ? updatedAuthor : author
+    editAuthor: async (
+      _root: any,
+      args: { name: string; setBornTo: number }
+    ) => {
+      try {
+        const updatedAuthor = await AuthorMongo.collection.findOneAndUpdate(
+          { name: args.name },
+          { $set: { born: args.setBornTo } },
+          { returnDocument: "after" }
         );
+        console.log("UPDATED AUTHOR: ", updatedAuthor);
         return updatedAuthor;
+      } catch (error) {
+        console.log(error);
       }
     },
   },
