@@ -191,7 +191,13 @@ const resolvers = {
           { $set: { born: args.setBornTo } },
           { returnDocument: "after" }
         );
-
+        if (!updatedAuthor) {
+          throw new GraphQLError("Editing user failed. ", {
+            extensions: {
+              code: "BAD_USER_INPUT || AUTHOR_NOT_FOUND",
+            },
+          });
+        }
         console.log("UPDATED AUTHOR: ", updatedAuthor);
         return updatedAuthor;
       } catch (error) {
