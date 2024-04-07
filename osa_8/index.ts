@@ -174,6 +174,8 @@ const resolvers = {
       args: any,
       { currentUser }: { currentUser: any }
     ) => {
+      console.log("AYE BRUHV");
+      console.log(_root, args, currentUser);
       if (!currentUser) {
         throw new GraphQLError("User not authenticated.", {
           extensions: {
