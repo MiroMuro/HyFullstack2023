@@ -39,7 +39,9 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author]
+    allGenres: [String!]!
     me: User!
+
   }
   type Author {
     name: String!
@@ -88,6 +90,7 @@ const resolvers = {
     bookCount: async () => BookMongo.collection.countDocuments(),
     authorCount: () => AuthorMongo.collection.countDocuments(),
     allBooks: async (_root: any, args: { author: string; genre: string }) => {
+      console.log("The genre: ", args.genre);
       if (args.author && args.genre) {
         try {
           const authorFind = await AuthorMongo.findOne({
@@ -117,9 +120,11 @@ const resolvers = {
           return null;
         }
       } else if (args.genre) {
+        console.log("SEVENTEEN THIRTY EIGHT IM LIKE WHATSUPHELLO");
         try {
           const bookslol = await BookMongo.find({ genres: args.genre });
           return bookslol;
+          console.log(bookslol);
         } catch (error) {
           console.log(error);
           return null;
@@ -129,6 +134,7 @@ const resolvers = {
       return await BookMongo.find({});
     },
     allAuthors: async () => await AuthorMongo.find({}),
+    allGenres: async () => await BookMongo.distinct("genres"),
   },
   Author: {
     bookCount: async (root: any) => {

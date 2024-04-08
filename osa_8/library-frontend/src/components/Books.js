@@ -1,26 +1,42 @@
-import { ALL_BOOKS } from "./queries";
+import { ALL_BOOKS, ALL_GENRES } from "./queries";
 import { useQuery } from "@apollo/client";
+import { useState } from "react";
 
+import Genres from "./Genres";
 const Books = (props) => {
+  const [currentGenre, setCurrentGenre] = useState("");
+  const [currentBooks, setCurrentBooks] = useState([]);
   const result = useQuery(ALL_BOOKS);
 
-  if (result.loading) {
+  const genresResult = useQuery(ALL_GENRES);
+
+  const { loading, error, data, refetch } = useQuery(ALL_BOOKS, {
+    variables: { genre: currentGenre },
+  });
+
+  if (result.loading || loading) {
     return <div>loading...</div>;
   }
-  const books = result.data.allBooks;
 
+  const onGenreChange = async (event) => {
+    event.preventDefault();
+    refetch();
+    console.log(data);
+  };
+  console.log(data.allBooks);
+  const books = result.data.allBooks;
   return (
     <div>
       <h2>books</h2>
-
+      <span>In genre: {currentGenre}</span>
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>title</th>
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
+          {data.allBooks.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>
@@ -31,6 +47,10 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
+      <Genres
+        genres={genresResult.data.allGenres}
+        setCurrentGenre={setCurrentGenre}
+      />
     </div>
   );
 };
