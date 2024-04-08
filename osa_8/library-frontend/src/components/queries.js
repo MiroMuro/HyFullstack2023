@@ -24,6 +24,14 @@ const ALL_BOOKS = gql`
     }
   }
 `;
+const GET_USER = gql`
+  query {
+    me {
+      username
+      favoriteGenre
+    }
+  }
+`;
 const CREATE_BOOK = gql`
   mutation (
     $title: String!
@@ -75,4 +83,5 @@ export {
   UPDATE_AUTHOR,
   LOGIN,
   ALL_GENRES,
+  GET_USER,
 };
