@@ -56,10 +56,14 @@ const resolver = {
 
       return await BookMongo.find({});
     },
-    allAuthors: async () => await AuthorMongo.find({}),
+    allAuthors: async () => {
+      const xd = await AuthorMongo.find().populate("bookCount");
+      console.log(xd);
+      return xd;
+    },
     allGenres: async () => await BookMongo.distinct("genres"),
   },
-  Author: {
+  /*Author: {
     bookCount: async (root: any) => {
       //The root may be an author or an book? Hence the if else
       if (root.name) {
@@ -81,7 +85,7 @@ const resolver = {
     id: (_root: any) => {
       return _root._id;
     },
-  },
+  },*/
   Book: {
     author: async (_root: any, _args: any) => {
       //The root may be an Book or an author.
