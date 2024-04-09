@@ -15,11 +15,7 @@ const NewBook = (props) => {
       console.log(messages);
     },
     update: (cache, response) => {
-      updateCache(
-        cache,
-        { query: [ALL_BOOKS, ALL_AUTHORS] },
-        response.data.addBook
-      );
+      updateCache(cache, { query: { ALL_BOOKS } }, response.data.addBook);
     },
   });
 
