@@ -5,9 +5,37 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
+import { useSubscription, useApolloClient } from "@apollo/client";
+import { BOOK_ADDED, ALL_BOOKS } from "./components/queries.js";
+
+export const updateCache = (cache, query, addedBook) => {
+  //This is used to eliminate duplicates from saving
+  const uniqByName = (a) => {
+    let seen = new Set();
+    return a.filter((item) => {
+      let k = item.title;
+      return seen.has(k) ? false : seen.add(k);
+    });
+  };
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return { allBooks: uniqByName(allBooks.concat(addedBook)) };
+  });
+};
+
 const App = () => {
   const [token, setToken] = useState(null);
   const padding = { padding: 5 };
+  const client = useApolloClient();
+  console.log("I AM IN APP");
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data.data.bookAdded;
+
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+    },
+  });
   return (
     <Router>
       <div>
